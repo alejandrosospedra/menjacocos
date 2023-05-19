@@ -359,7 +359,9 @@ void * temps_de_joc(void * nulo)
 			min += 1;
 		}
 		sprintf(strin,"Cocos: %d   %d:%d", cocos, min, seg);
-		win_escristr(strin);
+		pthread_mutex_lock(&mutex);
+    win_escristr(strin);
+    pthread_mutex_unlock(&mutex);
 		win_retard(1000);
 	}while(!fi1 && !fi2);
 	pthread_exit((void *) (intptr_t) 0);
