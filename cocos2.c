@@ -75,6 +75,7 @@
 #define MIN_COL 10
 #define MAX_COL 80
 #define MAX_THREADS	12
+#define MAX_FANTASMAS 9
 
 
 				/* definir estructures d'informacio */
@@ -97,7 +98,7 @@ pthread_t tid[MAX_THREADS];	/* taula d'identificadors dels threads */
 pthread_mutex_t mutex= PTHREAD_MUTEX_INITIALIZER; /* Crear un semafor global. */
 
 objecte mc;      		/* informacio del menjacocos */
-objecte f[9];			    /* informacio dels fantasmas */
+objecte f[MAX_FANTASMAS];			    /* informacio dels fantasmas */
 
 int df[] = {-1, 0, 1, 0};	/* moviments de les 4 direccions possibles */
 int dc[] = {0, -1, 0, 1};	/* dalt, esquerra, baix, dreta */
@@ -177,7 +178,7 @@ void carrega_parametres(const char *nom_fit)
     else {
       num_fantasmas++;
     }
-  while(!feof(fit)){
+  while(!feof(fit) && num_fantasmas < MAX_FANTASMAS){
     fscanf(fit,"%d %d %d %f\n",&f[num_fantasmas].f,&f[num_fantasmas].c,&f[num_fantasmas].d,&f[num_fantasmas].r);
       if ((f[num_fantasmas].f < 1) || (f[num_fantasmas].f > n_fil1-3) ||
 	(f[num_fantasmas].c < 1) || (f[num_fantasmas].c > n_col-2) ||
