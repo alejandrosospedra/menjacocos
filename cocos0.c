@@ -67,7 +67,7 @@
 #include <stdlib.h>		/* per exit() */
 #include <unistd.h>		/* per getpid() */
 #include "winsuport.h"		/* incloure definicions de funcions propies */
-#include "pthread.h"  /* incloure llibreria per crear threads*/
+
 
 
 #define MIN_FIL 7		/* definir limits de variables globals */
