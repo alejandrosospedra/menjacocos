@@ -278,7 +278,9 @@ void * mou_fantasma(void * index)
       if (vk < 0) vk += 4;		/* corregeix negatius */
       seg.f = f[ind].f + df[vk]; /* calcular posicio en la nova dir.*/
       seg.c = f[ind].c + dc[vk];
+      pthread_mutex_lock(&mutex);
       seg.a = win_quincar(seg.f,seg.c);	/* calcular caracter seguent posicio */
+      pthread_mutex_unlock(&mutex);
       if ((seg.a==' ') || (seg.a=='.') || (seg.a=='0'))
       { vd[nd] = vk;			/* memoritza com a direccio possible */
         nd++;
@@ -294,10 +296,16 @@ void * mou_fantasma(void * index)
 
       seg.f = f[ind].f + df[f[ind].d];  /* calcular seguent posicio final */
       seg.c = f[ind].c + dc[f[ind].d];
+      pthread_mutex_lock(&mutex);
       seg.a = win_quincar(seg.f,seg.c);	/* calcular caracter seguent posicio */
+      pthread_mutex_unlock(&mutex);
+      pthread_mutex_lock(&mutex);
       win_escricar(f[ind].f,f[ind].c,f[ind].a,NO_INV);	/* esborra posicio anterior */
+      pthread_mutex_unlock(&mutex);
       f[ind].f = seg.f; f[ind].c = seg.c; f[ind].a = seg.a;	/* actualitza posicio */
+      pthread_mutex_lock(&mutex);
       win_escricar(f[ind].f,f[ind].c,'1'+ind,NO_INV);		/* redibuixa fantasma */
+      pthread_mutex_unlock(&mutex);
       if (f[ind].a == '0') fi2 = 1;		/* ha capturat menjacocos */
     }
   } while (!fi1 && !fi2);
@@ -340,7 +348,7 @@ void * mou_menjacocos(void * nulo)
       mc.f = seg.f; mc.c = seg.c;			/* actualitza posicio */
       pthread_mutex_lock(&mutex);
       win_escricar(mc.f,mc.c,'0',NO_INV);		/* redibuixa menjacocos */
-      pthread_mutex_lock(&mutex);
+      pthread_mutex_unlock(&mutex);
       if (seg.a == '.')
       {
     cocos--;
@@ -399,6 +407,7 @@ int main(int n_args, const char *ll_args[])
   if (rc == 0)		/* si aconsegueix accedir a l'entorn CURSES */
   {
     inicialitza_joc();
+    pthread_mutex_init(&mutex, NULL);		/* inicialitza el semafor */
     p = 0; fi1 = 0; fi2 = 0;
     for (i = 0; i < num_fantasmas; i++)
     {
@@ -417,7 +426,7 @@ int main(int n_args, const char *ll_args[])
     pthread_join(tid[11], (void **)&t);
 
     win_fi();
-
+    pthread_mutex_destroy(&mutex); 		/* destrueix el semafor */
     if (fi1 == -1) printf("S'ha aturat el joc amb tecla RETURN!\n");
     else { if (fi1) printf("Ha guanyat l'usuari!\n");
 	     else printf("Ha guanyat l'ordinador!\n"); }
