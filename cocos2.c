@@ -94,6 +94,7 @@ char c_req;			    /* caracter de pared del laberint */
 int fi1, fi2;   /*condicions de finalitzacio de menjaocos y fantasma*/
 int num_fantasmas = 0; /*numero de fantasma*/
 pthread_t tid[MAX_THREADS];	/* taula d'identificadors dels threads */
+pthread_mutex_t mutex= PTHREAD_MUTEX_INITIALIZER; /* Crear un semafor global. */
 
 objecte mc;      		/* informacio del menjacocos */
 objecte f[9];			    /* informacio dels fantasmas */
