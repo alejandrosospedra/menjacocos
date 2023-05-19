@@ -329,12 +329,18 @@ void * mou_menjacocos(void * nulo)
     }
     seg.f = mc.f + df[mc.d];	/* calcular seguent posicio */
     seg.c = mc.c + dc[mc.d];
+    pthread_mutex_lock(&mutex);
     seg.a = win_quincar(seg.f,seg.c);	/* calcular caracter seguent posicio */
+    pthread_mutex_unlock(&mutex);
     if ((seg.a == ' ') || (seg.a == '.'))
     {
+      pthread_mutex_lock(&mutex);
       win_escricar(mc.f,mc.c,' ',NO_INV);		/* esborra posicio anterior */
+      pthread_mutex_unlock(&mutex);
       mc.f = seg.f; mc.c = seg.c;			/* actualitza posicio */
+      pthread_mutex_lock(&mutex);
       win_escricar(mc.f,mc.c,'0',NO_INV);		/* redibuixa menjacocos */
+      pthread_mutex_lock(&mutex);
       if (seg.a == '.')
       {
     cocos--;
